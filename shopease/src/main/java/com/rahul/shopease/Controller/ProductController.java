@@ -3,6 +3,7 @@ package com.rahul.shopease.Controller;
 import com.rahul.shopease.DTO.Request.ProductRequest;
 import com.rahul.shopease.DTO.Response.ProductResponse;
 import com.rahul.shopease.Service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/add")
-    public ProductResponse addProduct(@RequestBody ProductRequest request){
+    public ProductResponse addProduct(@Valid @RequestBody ProductRequest request){
         return productService.addProduct(request);
     }
 
@@ -30,7 +31,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ProductResponse updateProductById(@PathVariable("productId") int productId,@RequestBody ProductRequest request){
+    public ProductResponse updateProductById(@PathVariable("productId") int productId,@Valid @RequestBody ProductRequest request){
         return productService.updateProduct(productId,request);
     }
     @DeleteMapping("/{productId}")

@@ -3,6 +3,7 @@ package com.rahul.shopease.Service;
 import com.rahul.shopease.DTO.Request.ProductRequest;
 import com.rahul.shopease.DTO.Response.ProductResponse;
 import com.rahul.shopease.Entity.Product;
+import com.rahul.shopease.Exception.ProductNotFoundException;
 import com.rahul.shopease.Repository.ProductRepository;
 import com.rahul.shopease.Transformer.ProductTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +31,13 @@ public class ProductService {
 
     public ProductResponse getProductById(int productId){
         Product product = productRepository.findById(productId)
-                .orElseThrow(( ) -> new RuntimeException("Product not found"));
+                .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
         return ProductTransformer.productToResponse(product);
     }
 
     public ProductResponse updateProduct(int productId,ProductRequest request){
         Product product = productRepository.findById(productId)
-                .orElseThrow(( ) -> new RuntimeException("Product not found"));
+                .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
 
         product.setProductName(request.getProductName());
         product.setDecsription(request.getDescription());
@@ -51,7 +52,7 @@ public class ProductService {
 
     public String deleteProduct(int productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(( ) -> new RuntimeException("Product not found"));
+                .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
         productRepository.delete(product);
         return "Product delete Sucessfully";
     }
