@@ -16,12 +16,14 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    // Add Product
     public ProductResponse addProduct(ProductRequest request){
         Product product = ProductTransformer.requestToProduct(request);
         Product savedProduct=productRepository.save(product);
         return ProductTransformer.productToResponse(savedProduct);
     }
 
+    //Get All product
     public List<ProductResponse> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
@@ -29,12 +31,14 @@ public class ProductService {
                 .toList();
     }
 
+        //get Product By ID
     public ProductResponse getProductById(int productId){
         Product product = productRepository.findById(productId)
                 .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
         return ProductTransformer.productToResponse(product);
     }
 
+    //Update Product
     public ProductResponse updateProduct(int productId,ProductRequest request){
         Product product = productRepository.findById(productId)
                 .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
@@ -50,6 +54,7 @@ public class ProductService {
         return ProductTransformer.productToResponse(updatedProduct);
     }
 
+        //Delete Product
     public String deleteProduct(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(( ) -> new ProductNotFoundException("Product not found"));
