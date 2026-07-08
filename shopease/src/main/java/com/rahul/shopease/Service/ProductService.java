@@ -2,8 +2,11 @@ package com.rahul.shopease.Service;
 
 import com.rahul.shopease.DTO.Request.ProductRequest;
 import com.rahul.shopease.DTO.Response.ProductResponse;
+import com.rahul.shopease.Entity.Category;
 import com.rahul.shopease.Entity.Product;
+import com.rahul.shopease.Exception.CategoryNotFoundException;
 import com.rahul.shopease.Exception.ProductNotFoundException;
+import com.rahul.shopease.Repository.CategoryRepository;
 import com.rahul.shopease.Repository.ProductRepository;
 import com.rahul.shopease.Transformer.ProductTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,16 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
+
     // Add Product
     public ProductResponse addProduct(ProductRequest request){
         Product product = ProductTransformer.requestToProduct(request);
+        Category category=categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
+        product.setCategory(category);
         Product savedProduct=productRepository.save(product);
         return ProductTransformer.productToResponse(savedProduct);
     }
@@ -47,7 +57,10 @@ public class ProductService {
         product.setDecsription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
-        product.setCategory(request.getCategory());
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                        .orElseThrow(()->new CategoryNotFoundException("Category not found"));
+        product.setCategory(category);
         product.setImageUrl(request.getImageUrl());
 
         Product updatedProduct=productRepository.save(product);

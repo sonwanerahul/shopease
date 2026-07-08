@@ -3,6 +3,7 @@ package com.rahul.shopease.Service;
 import com.rahul.shopease.DTO.Request.CategoryRequest;
 import com.rahul.shopease.DTO.Response.CategoryResponse;
 import com.rahul.shopease.Entity.Category;
+import com.rahul.shopease.Exception.CategoryInUseException;
 import com.rahul.shopease.Exception.CategoryNotFoundException;
 import com.rahul.shopease.Repository.CategoryRepository;
 import com.rahul.shopease.Transformer.CategoryTransformer;
@@ -54,7 +55,12 @@ public class CategoryService {
     public String deleteCategoryById(int categoryId){
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(()->new CategoryNotFoundException("Category not found"));
-        categoryRepository.delete(category);
+        try {
+            categoryRepository.delete(category);
+        }
+        catch(Exception e){
+            throw new CategoryInUseException("Category cannot be deleted because products are assigner to it");
+            }
         return "Category deleted successfully";
     }
 }

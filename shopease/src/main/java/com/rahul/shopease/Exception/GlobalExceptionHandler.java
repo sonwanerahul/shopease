@@ -29,4 +29,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(CategoryInUseException.class)
+    public ResponseEntity<String> handleCategoryInUseException(CategoryInUseException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

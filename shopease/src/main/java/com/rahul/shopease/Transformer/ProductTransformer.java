@@ -12,7 +12,6 @@ public class ProductTransformer {
                 .decsription(request.getDescription())
                 .price(request.getPrice())
                 .stock(request.getStock())
-                .category(request.getCategory())
                 .imageUrl(request.getImageUrl())
                 .build();
     }
@@ -24,7 +23,8 @@ public class ProductTransformer {
                 .description(product.getDecsription())
                 .price(product.getPrice())
                 .stock(product.getStock())
-                .category(product.getCategory())
+                .categoryId(product.getCategory().getCategoryId())
+                .categoryName(product.getCategory().getCategoryName())
                 .imageUrl(product.getImageUrl())
                 .build();
     }

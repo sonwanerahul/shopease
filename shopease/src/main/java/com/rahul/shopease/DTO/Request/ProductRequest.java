@@ -19,8 +19,8 @@ public class ProductRequest {
     private double price;
     @PositiveOrZero(message="Stock can not be Negative")
     private int stock;
-    @NotBlank(message="Category  is required")
-    private String category;
+    @Positive(message="Category Id must be greather than 0")
+    private int categoryId;
     @NotBlank(message="Image Url  is required")
     private String imageUrl;
 }
