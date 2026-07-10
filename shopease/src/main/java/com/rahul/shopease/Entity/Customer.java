@@ -26,4 +26,7 @@ public class Customer {
     @Column(length = 500)
     private String address;
 
+    @OneToOne(mappedBy = "customer")
+    private Cart cart;
+
 }
