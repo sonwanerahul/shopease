@@ -3,6 +3,8 @@ package com.rahul.shopease.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,4 +20,7 @@ public class Cart {
     @OneToOne
     @JoinColumn(name="customer_Id")
     private Customer customer;
+
+    @OneToMany(mappedBy ="cart")
+    private List<CartItems> cartItems;
 }
