@@ -53,4 +53,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String>handelCartItemNotFoundException(CartItemNotFoundException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(OrderAlreadyDeliverdException.class)
+    public ResponseEntity<String> handleOrderAlreadyDeliverdException(OrderAlreadyDeliverdException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
