@@ -1,12 +1,16 @@
 package com.rahul.shopease.Service;
 
+import com.rahul.shopease.DTO.Request.ChangePasswordRequest;
 import com.rahul.shopease.DTO.Request.CustomerRequest;
+import com.rahul.shopease.DTO.Request.CustomerUpdateRequest;
 import com.rahul.shopease.DTO.Response.CustomerResponse;
 import com.rahul.shopease.Entity.Customer;
 import com.rahul.shopease.Exception.CustomerNotFoundException;
 import com.rahul.shopease.Repository.CustomerRepository;
 import com.rahul.shopease.Transformer.CustomerTrnasformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +19,8 @@ import java.util.List;
 public class CustomerService {
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     //Add Customer
     public CustomerResponse addCustomer(CustomerRequest customerRequest){
@@ -44,15 +50,14 @@ public class CustomerService {
     }
 
     //Update Customer By id
-    public CustomerResponse updateCustomerById(CustomerRequest customerRequest,int customerId){
-        Customer customer = customerRepository.findById(customerId)
+    public CustomerResponse updateProfile(CustomerUpdateRequest customerUpdateRequest){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(()->new CustomerNotFoundException("Customer Not Found"));
-        customer.setCustomerName(customerRequest.getCustomerName());
-        customer.setGender(customerRequest.getGender());
-        customer.setEmail(customerRequest.getEmail());
-        customer.setPassword(customerRequest.getPassword());
-        customer.setMobileNo(customerRequest.getMobileNo());
-        customer.setAddress(customerRequest.getAddress());
+        customer.setCustomerName(customerUpdateRequest.getCustomerName());
+        customer.setGender(customerUpdateRequest.getGender());
+        customer.setMobileNo(customerUpdateRequest.getMobileNo());
+        customer.setAddress(customerUpdateRequest.getAddress());
 
         Customer savedCustomer=customerRepository.save(customer);
         return CustomerTrnasformer.customerToResponse(savedCustomer);
@@ -65,7 +70,23 @@ public class CustomerService {
         customerRepository.delete(customer);
         return "Customer deleted Sucesfully";
 
+    }
 
-
+    public CustomerResponse getLoggedInCustomer(String email){
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(()->new CustomerNotFoundException("Customer Not Found"));
+        return CustomerTrnasformer.customerToResponse(customer);
+    }
+    public String changePassword(ChangePasswordRequest changePasswordRequest , String email){
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(()->new CustomerNotFoundException("Customer Not Found"));
+        boolean isMatch = passwordEncoder.matches(changePasswordRequest.getOldPassword(),
+                customer.getPassword());
+        if(!isMatch){
+            throw new RuntimeException("Old Password is Incorrect");
+        }
+        customer.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        customerRepository.save(customer);
+        return "Password Changed Sucessfully";
     }
 }

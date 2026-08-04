@@ -9,11 +9,8 @@ public class CustomerTrnasformer {
     public static Customer requestToCustomer(CustomerRequest request){
         return Customer.builder()
                 .customerName(request.getCustomerName())
-                .gender(request.getGender())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .mobileNo(request.getMobileNo())
-                .address(request.getAddress())
                 .build();
     }
 

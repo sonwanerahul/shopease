@@ -1,10 +1,14 @@
 package com.rahul.shopease.Controller;
 
+import com.rahul.shopease.DTO.Request.ChangePasswordRequest;
 import com.rahul.shopease.DTO.Request.CustomerRequest;
+import com.rahul.shopease.DTO.Request.CustomerUpdateRequest;
 import com.rahul.shopease.DTO.Response.CustomerResponse;
 import com.rahul.shopease.Service.CustomerService;
 import jakarta.validation.Valid;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,13 +36,24 @@ public class CustomerController {
     public CustomerResponse getCustomerByEmail(@Valid @PathVariable("email") String email){
         return customerService.getCustomerByEmail(email);
     }
-    @PutMapping("/{customerId}")
-    public CustomerResponse updateCustomerById(@Valid @RequestBody CustomerRequest customerRequest,
-                                                @PathVariable("customerId") int customerId){
-        return customerService.updateCustomerById(customerRequest, customerId);
+    @PutMapping("/update")
+    public CustomerResponse updateCustomerProfile(@Valid @RequestBody CustomerUpdateRequest customerUpadteRequest){
+        return customerService.updateProfile(customerUpadteRequest);
     }
     @DeleteMapping("/{customerId}")
     public String deleteCustomer(@Valid @PathVariable("customerId") int customerId){
         return customerService.deleteCustomer(customerId);
+    }
+    @GetMapping("/profile")
+    public CustomerResponse getCustomerProfile(Authentication authentication){
+        String email = authentication.getName();
+        return customerService.getLoggedInCustomer(email);
+    }
+    @PutMapping("/change-password")
+    public String changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest ,
+                                 Authentication authentication){
+        String email = authentication.getName();
+        return customerService.changePassword(changePasswordRequest, email);
+
     }
 }

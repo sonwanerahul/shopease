@@ -32,6 +32,7 @@ public class AuthService {
         Customer newCustomer = CustomerTrnasformer.requestToCustomer(customerRequest);
         newCustomer.setRole(Role.CUSTOMER);
         newCustomer.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
+        newCustomer.setRole(Role.CUSTOMER);
         Customer savedCustomer = customerRepository.save(newCustomer);
 
         return CustomerTrnasformer.customerToResponse(savedCustomer);
